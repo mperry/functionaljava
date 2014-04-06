@@ -17,7 +17,6 @@ import static java.lang.System.out;
 public class Problem2 {
 	public static void main(final String[] args) {
 		java7();
-		java8();
 	}
 
 	static void java7() {
@@ -27,15 +26,6 @@ public class Problem2 {
 			}
 		}.f(1, 2);
 		out.println(sum(fibs.filter(even).takeWhile(intOrd.isLessThan(4000001)).toList()));
-	}
-
-	static F2<Integer, Integer, Stream<Integer>> fibsJava8 = (a, b) -> {
-
-		return cons(a, F1Functions.lazy(F2Functions.curry(Problem2.fibsJava8).f(b)).f(a + b));
-	};
-
-	static void java8() {
-		out.println(sum(fibsJava8.f(1, 2).filter(even).takeWhile(intOrd.isLessThan(4000001)).toList()));
 	}
 
 }
