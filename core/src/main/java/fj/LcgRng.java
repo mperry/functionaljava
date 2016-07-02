@@ -1,5 +1,8 @@
 package fj;
 
+import fj.data.Option;
+import fj.data.Stream;
+
 /**
  * Created by MarkPerry on 7/07/2014.
  *
@@ -42,6 +45,21 @@ public class LcgRng extends Rng {
         long newSeed = (seed * 0x5DEECE66DL + 0xBL) & 0xFFFFFFFFFFFFL;
         long n = newSeed >>> 16;
         return P.p(newSeed, n);
+    }
+
+    public static Stream<Integer> intStream() {
+        return stream(r -> r.nextInt());
+    }
+
+    public static Stream<Integer> naturalIntStream() {
+        return stream(r -> r.nextNatural());
+    }
+
+    public static <A> Stream<A> stream(F<Rng, P2<Rng, A>> f) {
+        return Stream.<A, Rng>unfold(r -> {
+            P2<Rng, A> p = f.f(r);
+            return Option.some(P.p(p._2(), p._1()));
+        }, new LcgRng());
     }
 
 }

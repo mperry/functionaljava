@@ -1,7 +1,21 @@
 
+plugins {
+    id "me.champeau.gradle.jmh" version "0.3.0"
+}
+
 configureAllRetroLambda()
 
 dependencies {
     compile project(":core")
     testCompile dependencyJunit
 }
+
+jmh {
+    warmupIterations = 2
+    iterations = 2
+    fork = 1
+    benchmarkMode = 'thrpt'
+//    benchmarkMode = 'avgt'
+}
+
+
