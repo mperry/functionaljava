@@ -6,6 +6,7 @@ import fj.LcgRng;
 import fj.Ord;
 import fj.P;
 import fj.data.hamt.HashArrayMappedTrie;
+import javaslang.collection.HAMTUsage;
 import org.openjdk.jmh.annotations.Benchmark;
 
 /**
@@ -40,6 +41,16 @@ public class MapPerformance {
     @Benchmark
     public void trie() {
         s.foldLeft((acc, i) -> acc.set(i, i), HashArrayMappedTrie.<Integer>emptyKeyInteger());
+    }
+
+    @Benchmark
+    public void javaslang() {
+        HAMTUsage.jlHamt(s);
+
+    }
+
+    public static void main(String args[]) {
+        new MapPerformance().trie();
     }
 
 }

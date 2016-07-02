@@ -7,6 +7,7 @@ configureAllRetroLambda()
 
 dependencies {
     compile project(":core")
+    compile "com.javaslang:javaslang:2.0.0-RC4"
     testCompile dependencyJunit
 }
 
