@@ -11,7 +11,7 @@ import org.openjdk.jmh.annotations.Benchmark;
 /**
  * Created by MarkPerry on 2 Jul 16.
  */
-public class Map {
+public class MapPerformance {
 
     public static final int n = 100;
     public static final Stream<Integer> s = LcgRng.naturalIntStream().take(n);
