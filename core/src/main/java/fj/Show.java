@@ -4,6 +4,8 @@ import fj.data.*;
 import fj.data.hamt.BitSet;
 import fj.data.hamt.HashArrayMappedTrie;
 import fj.data.fingertrees.FingerTree;
+import fj.data.hamt2.BitSet2;
+import fj.data.hamt2.HashArrayMappedTrie2;
 import fj.data.hlist.HList;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
@@ -319,8 +321,8 @@ public final class Show<A> {
   public static <V, A> Show<fj.data.fingertrees.Node<V, A>> nodeShow(final Show<V> sv, final Show<A> sa) {
     return show(n -> {
       final String s = n.match(
-          n2 -> "Node2(" + n2.measure() + " -> " + v2Show(sa).showS(n2.toVector()) + ")",
-          n3 -> "Node3(" + n3.measure() + " -> " + v3Show(sa).showS(n3.toVector()) + ")");
+              n2 -> "Node2(" + n2.measure() + " -> " + v2Show(sa).showS(n2.toVector()) + ")",
+              n3 -> "Node3(" + n3.measure() + " -> " + v3Show(sa).showS(n3.toVector()) + ")");
       return Stream.fromString(s);
     });
   }
@@ -717,6 +719,22 @@ public final class Show<A> {
 
   public static final Show<BitSet> bitSetShow = Show.showS(
           bs -> "BitSet(" + bs.asString() + ")"
+  );
+
+  public static <K, V> Show<fj.data.hamt2.Node2<K, V>> hamtNodeShow2(Show<K> sk, Show<V> sv) {
+    F<fj.data.hamt2.Node2<K, V>, String> f = n -> n.match(p -> p2Show(sk, sv).showS(p), h -> hamtShow2(sk, sv).showS(h));
+    return Show.showS(f);
+  }
+
+  public static <K, V> Show<HashArrayMappedTrie2<K, V>> hamtShow2(Show<K> sk, Show<V> sv) {
+    return Show.showS(hamt ->
+            "HashArrayMappedTrie2(" + Show.bitSetShow2.showS(hamt.getBitSet()) +
+                    ", " + Show.seqShow(Show.hamtNodeShow2(sk, sv)).showS(hamt.getSeq()) + ")"
+    );
+  }
+
+  public static final Show<BitSet2> bitSetShow2 = Show.showS(
+          bs -> "BitSet2(" + bs.asString() + ")"
   );
 
 }

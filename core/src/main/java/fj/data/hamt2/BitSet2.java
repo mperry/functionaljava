@@ -1,4 +1,4 @@
-package fj.data.hamt;
+package fj.data.hamt2;
 
 import fj.Equal;
 import fj.F2;
@@ -6,18 +6,17 @@ import fj.Monoid;
 import fj.Show;
 import fj.data.List;
 import fj.data.Stream;
-import fj.function.Strings;
 
 /**
  * A sequence of bits representing a value.  The most significant bit (the
  * bit with the highest value) is the leftmost bit and has the highest index.
- * For example, the BitSet("1011") represents the decimal number 11 and has
+ * For example, the BitSet2("1011") represents the decimal number 11 and has
  * indices [3, 0] inclusive where the bit with the lowest value has the lowest
  * index and is the rightmost bit.
  *
  * Created by maperr on 31/05/2016.
  */
-public final class BitSet {
+public final class BitSet2 {
 
     public static final int TRUE_BIT = 1;
     public static final int FALSE_BIT = 0;
@@ -28,19 +27,19 @@ public final class BitSet {
 
     private final long value;
 
-    private BitSet(final long l) {
+    private BitSet2(final long l) {
         value = l;
     }
 
-    public static BitSet empty() {
-        return new BitSet(FALSE_BIT);
+    public static BitSet2 empty() {
+        return new BitSet2(FALSE_BIT);
     }
 
-    public static BitSet longBitSet(final long l) {
-        return new BitSet(l);
+    public static BitSet2 longBitSet(final long l) {
+        return new BitSet2(l);
     }
 
-    public static BitSet listBitSet(final List<Boolean> list) {
+    public static BitSet2 listBitSet(final List<Boolean> list) {
         final int n = list.length();
         if (n > MAX_BIT_SIZE) {
             throw new IllegalArgumentException("Does not support lists greater than " + MAX_BIT_SIZE + " bits, actual size is " + n);
@@ -52,11 +51,11 @@ public final class BitSet {
         return longBitSet(result);
     }
 
-    public static BitSet streamBitSet(final Stream<Boolean> s) {
+    public static BitSet2 streamBitSet(final Stream<Boolean> s) {
         return listBitSet(s.toList());
     }
 
-    public static BitSet stringBitSet(final String s) {
+    public static BitSet2 stringBitSet(final String s) {
         return streamBitSet(Stream.fromString(s).map(c -> toBoolean(c)));
     }
 
@@ -68,15 +67,15 @@ public final class BitSet {
         return value == 0;
     }
 
-    public BitSet set(final int index) {
+    public BitSet2 set(final int index) {
         return longBitSet(value | (BASE_LONG << index));
     }
 
-    public BitSet set(final int index, boolean b) {
+    public BitSet2 set(final int index, boolean b) {
         return b ? set(index) : clear(index);
     }
 
-    public BitSet clear(final int index) {
+    public BitSet2 clear(final int index) {
         return longBitSet(value & ~(BASE_LONG << index));
     }
 
@@ -84,19 +83,19 @@ public final class BitSet {
         return value;
     }
 
-    public BitSet and(final BitSet bs) {
+    public BitSet2 and(final BitSet2 bs) {
         return longBitSet(value & bs.longValue());
     }
 
-    public BitSet or(final BitSet bs) {
+    public BitSet2 or(final BitSet2 bs) {
         return longBitSet(value | bs.longValue());
     }
 
-    public BitSet shiftRight(final int n) {
+    public BitSet2 shiftRight(final int n) {
         return longBitSet(value >> n);
     }
 
-    public BitSet shiftLeft(final int n) {
+    public BitSet2 shiftLeft(final int n) {
         return longBitSet(value << n);
     }
 
@@ -117,11 +116,12 @@ public final class BitSet {
     }
 
     public String toString() {
-        return Show.bitSetShow.showS(this);
+        return Show.anyShow().showS(this);
+//        return Show.bitSetShow.showS(this);
     }
 
     public boolean equals(Object obj) {
-        return Equal.equals0(BitSet.class, this, obj, () -> Equal.bitSetEqual);
+        return Equal.equals0(BitSet2.class, this, obj, () -> Equal.bitSetEqual2);
     }
 
 
@@ -167,19 +167,19 @@ public final class BitSet {
         return toStream().foldLeft((a, b) -> f.f(a, b), acc);
     }
 
-    public BitSet xor(final BitSet bs) {
+    public BitSet2 xor(final BitSet2 bs) {
         return longBitSet(value ^ bs.longValue());
     }
 
-    public BitSet not() {
+    public BitSet2 not() {
         return longBitSet(~value);
     }
 
-    public BitSet takeLower(final int n) {
+    public BitSet2 takeLower(final int n) {
         return streamBitSet(toStream().reverse().take(n).reverse());
     }
 
-    public BitSet takeUpper(final int n) {
+    public BitSet2 takeUpper(final int n) {
         String zero = Integer.toString(FALSE_BIT);
         String current = asString();
         String pad = Monoid.stringMonoid.sumLeft(List.replicate(MAX_BIT_SIZE - current.length(), zero));
@@ -191,7 +191,7 @@ public final class BitSet {
      * to high(exclusive) from the least significant bit (on the right),
      * e.g. "101101".range(1, 4) == "0110"
      */
-    public BitSet range(final int highIndex, final int lowIndex) {
+    public BitSet2 range(final int highIndex, final int lowIndex) {
         int max = Math.max(lowIndex, highIndex);
         int min = Math.min(lowIndex, highIndex);
         return streamBitSet(toStream().reverse().drop(min).take(max - min).reverse());

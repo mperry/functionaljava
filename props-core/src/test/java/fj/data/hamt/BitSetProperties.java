@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 
 import java.math.BigInteger;
 
-import static fj.Equal.bitSetSequal;
+import static fj.Equal.bitSetEqual;
 import static fj.Equal.booleanEqual;
 import static fj.Equal.listEqual;
 import static fj.Equal.stringEqual;
@@ -190,13 +190,13 @@ public class BitSetProperties {
 
     Property takeLowerTest() {
         return property(arbNaturalLong, arbBitSetSize, (l, i) -> {
-            return prop(bitSetSequal.eq(longBitSet(l).takeLower(i), longBitSet(l).range(0, i)));
+            return prop(bitSetEqual.eq(longBitSet(l).takeLower(i), longBitSet(l).range(0, i)));
         });
     }
 
     Property takeUpperTest() {
         return property(arbNaturalLong, arbBitSetSize, (l, i) -> {
-            return prop(bitSetSequal.eq(longBitSet(l).takeUpper(i), longBitSet(l).range(MAX_BIT_SIZE, MAX_BIT_SIZE - i)));
+            return prop(bitSetEqual.eq(longBitSet(l).takeUpper(i), longBitSet(l).range(MAX_BIT_SIZE, MAX_BIT_SIZE - i)));
         });
     }
 

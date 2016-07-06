@@ -6,6 +6,7 @@ import fj.LcgRng;
 import fj.Ord;
 import fj.P;
 import fj.data.hamt.HashArrayMappedTrie;
+import fj.data.hamt2.HashArrayMappedTrie2;
 import javaslang.collection.HAMTUsage;
 import org.openjdk.jmh.annotations.Benchmark;
 
@@ -14,7 +15,7 @@ import org.openjdk.jmh.annotations.Benchmark;
  */
 public class MapPerformance {
 
-    public static final int n = 100;
+    public static final int n = 10000000;
     public static final Stream<Integer> s = LcgRng.naturalIntStream().take(n);
 
     @Benchmark
@@ -41,6 +42,11 @@ public class MapPerformance {
     @Benchmark
     public void trie() {
         s.foldLeft((acc, i) -> acc.set(i, i), HashArrayMappedTrie.<Integer>emptyKeyInteger());
+    }
+
+    @Benchmark
+    public void trie2() {
+        s.foldLeft((acc, i) -> acc.set(i, i), HashArrayMappedTrie2.<Integer>emptyKeyInteger());
     }
 
     @Benchmark

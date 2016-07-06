@@ -4,6 +4,7 @@ import static fj.Function.curry;
 
 import fj.data.*;
 import fj.data.hamt.BitSet;
+import fj.data.hamt2.BitSet2;
 import fj.data.hlist.HList;
 import fj.data.vector.V2;
 import fj.data.vector.V3;
@@ -105,7 +106,8 @@ public final class Equal<A> {
    */
   public static final Equal<Boolean> booleanEqual = anyEqual();
 
-  public static final Equal<BitSet> bitSetSequal = Equal.equal(bs1 -> bs2 -> bs1.longValue() == bs2.longValue());
+  public static final Equal<BitSet> bitSetEqual = Equal.equal(bs1 -> bs2 -> bs1.longValue() == bs2.longValue());
+  public static final Equal<BitSet2> bitSetEqual2 = Equal.equal(bs1 -> bs2 -> bs1.longValue() == bs2.longValue());
 
   /**
    * An equal instance for the <code>byte</code> type.
