@@ -4,6 +4,7 @@ import fj.data.*;
 import fj.data.hamt.BitSet;
 import fj.data.hamt.HashArrayMappedTrie;
 import fj.data.fingertrees.FingerTree;
+import fj.data.hamt.ValueNode;
 import fj.data.hamt2.BitSet2;
 import fj.data.hamt2.HashArrayMappedTrie2;
 import fj.data.hlist.HList;
@@ -706,8 +707,12 @@ public final class Show<A> {
   }
 
   public static <K, V> Show<fj.data.hamt.Node<K, V>> hamtNodeShow(Show<K> sk, Show<V> sv) {
-    F<fj.data.hamt.Node<K, V>, String> f = n -> n.match(p -> p2Show(sk, sv).showS(p), h -> hamtShow(sk, sv).showS(h));
+    F<fj.data.hamt.Node<K, V>, String> f = n -> n.match(p -> rawValueShow(sk, sv).showS(p), h -> hamtShow(sk, sv).showS(h));
     return Show.showS(f);
+  }
+
+  public static <K, V> Show<ValueNode<K, V>> rawValueShow(Show<K> sk, Show<V> sv) {
+    return Show.showS(rv -> Show.p4Show(sk, sv, Show.intShow, Show.intShow).showS(P.p(rv.getKey(), rv.getValue(), rv.getRemainderHash(), rv.getNodeHash())));
   }
 
   public static <K, V> Show<HashArrayMappedTrie<K, V>> hamtShow(Show<K> sk, Show<V> sv) {

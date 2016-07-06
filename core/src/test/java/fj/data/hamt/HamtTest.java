@@ -45,6 +45,13 @@ public class HamtTest {
     }
 
     @Test
+    public void firstConflict() {
+        List<P2<Integer, Integer>> list = list(p(0, 0), p(32, 32));
+        HashArrayMappedTrie<Integer, Integer> h2 = empty.set(list);
+        assertThat(h2.length(), equalTo(list.length()));
+    }
+
+    @Test
     public void allIn() {
         List<P2<Integer, Integer>> list = List.list(p(-5, 0), p(-1, -5), p(2, 4), p(4, -2));
         HashArrayMappedTrie<Integer, Integer> h = empty.set(list);
@@ -61,6 +68,17 @@ public class HamtTest {
         Option<Integer> o2 = h.find(key);
         boolean b = optionEqual(intEqual).eq(o1, o2);
         assertThat(b, equalTo(true));
+    }
+
+    @Test
+    public void test1() {
+        List<P2<Integer, Integer>> list = List.list(p(-32, 9), p(-27, -39), p(-22, -7), p(-18, 35), p(-14, 22), p(-9, -36), p(-5, -39), p(-4, -2), p(-1, -37), p(0, 3), p(11, -7), p(20, 5), p(25, -28), p(28, -10), p(38, -6), p(39, 34));
+//        List<P2<Integer, Integer>> list = List.list(p(-0, 0), p(-32, -32));
+
+        HashArrayMappedTrie<Integer, Integer> h = empty.set(list);
+        int z = 0;
+
+
     }
 
 }

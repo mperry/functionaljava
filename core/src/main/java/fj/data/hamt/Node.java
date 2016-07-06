@@ -1,6 +1,7 @@
 package fj.data.hamt;
 
 import fj.F;
+import fj.P;
 import fj.P2;
 import fj.Show;
 import fj.data.Either;
@@ -15,13 +16,13 @@ import fj.data.Stream;
  */
 public final class Node<K, V> {
 
-    private final Either<P2<K, V>, HashArrayMappedTrie<K, V>> either;
+    private final Either<ValueNode<K, V>, HashArrayMappedTrie<K, V>> either;
 
-    public Node(final Either<P2<K, V>, HashArrayMappedTrie<K, V>> e) {
+    public Node(final Either<ValueNode<K, V>, HashArrayMappedTrie<K, V>> e) {
         either = e;
     }
 
-    public Node(final P2<K, V> simpleNode) {
+    public Node(final ValueNode<K, V> simpleNode) {
         this(Either.left(simpleNode));
     }
 
@@ -29,7 +30,7 @@ public final class Node<K, V> {
         this(Either.right(hamt));
     }
 
-    public static <K, V> Node<K, V> p2Node(final P2<K, V> p) {
+    public static <K, V> Node<K, V> valueNode(final ValueNode<K, V> p) {
         return new Node<>(p);
     }
 
@@ -40,19 +41,19 @@ public final class Node<K, V> {
     /**
      * Returns the optional value based on a pattern match.
      */
-    public Option<V> find(final F<P2<K, V>, Option<V>> f, final F<HashArrayMappedTrie<K, V>, Option<V>> g) {
+    public Option<V> find(final F<ValueNode<K, V>, Option<V>> f, final F<HashArrayMappedTrie<K, V>, Option<V>> g) {
         return match(p -> f.f(p), hamt -> g.f(hamt));
     }
 
     /**
      * Performs a reduction on this Node using the given arguments.
      */
-    public <B> B match(final F<P2<K, V>, B> f, final F<HashArrayMappedTrie<K, V>, B> g) {
+    public <B> B match(final F<ValueNode<K, V>, B> f, final F<HashArrayMappedTrie<K, V>, B> g) {
         return either.either(p -> f.f(p), hamt -> g.f(hamt));
     }
 
     public Stream<P2<K, V>> toStream() {
-        return match(p -> Stream.single(p), h -> h.toStream());
+        return match(p -> Stream.single(P.p(p.getKey(), p.getValue())), h -> h.toStream());
     }
 
     public String toString() {

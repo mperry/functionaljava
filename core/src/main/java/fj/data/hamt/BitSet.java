@@ -23,12 +23,13 @@ public final class BitSet {
     public static final int FALSE_BIT = 0;
 
     public static final long BASE_LONG = 1L;
+    public static final long BASE_INT = 1;
     public static final int MAX_BIT_SIZE = Long.SIZE;
     public static final int MAX_BIT_INDEX = Long.SIZE - 1;
 
-    private final long value;
+    private final int value;
 
-    private BitSet(final long l) {
+    private BitSet(final int l) {
         value = l;
     }
 
@@ -37,6 +38,10 @@ public final class BitSet {
     }
 
     public static BitSet longBitSet(final long l) {
+        return new BitSet((int) l);
+    }
+
+    public static BitSet intBitSet(final int l) {
         return new BitSet(l);
     }
 
@@ -61,7 +66,7 @@ public final class BitSet {
     }
 
     public boolean isSet(final int index) {
-        return (value & (BASE_LONG << index)) != 0;
+        return (value & (BASE_INT << index)) != 0;
     }
 
     public boolean isEmpty() {
@@ -69,7 +74,7 @@ public final class BitSet {
     }
 
     public BitSet set(final int index) {
-        return longBitSet(value | (BASE_LONG << index));
+        return longBitSet(value | (BASE_INT << index));
     }
 
     public BitSet set(final int index, boolean b) {
@@ -77,10 +82,14 @@ public final class BitSet {
     }
 
     public BitSet clear(final int index) {
-        return longBitSet(value & ~(BASE_LONG << index));
+        return longBitSet(value & ~(BASE_INT << index));
     }
 
     public long longValue() {
+        return value;
+    }
+
+    public int intValue() {
         return value;
     }
 
@@ -137,13 +146,19 @@ public final class BitSet {
     }
 
     public int bitsToRight(final int index) {
+        final int mask = (1 << index) - 1;
+        final int n = Integer.bitCount(value & mask);
+        return n;
+    }
+
+    public int bitsToRight1(final int index) {
         if (index >= MAX_BIT_SIZE) {
             throw new IllegalArgumentException("Does not support an index " +
                     "greater than or equal to " + MAX_BIT_SIZE + " bits, actual argument is " + index);
         }
         //  stringBitSet("10101111").bitsRoRight(2)= 2
         int pos = index - 1;
-        long mask = BASE_LONG << (pos);
+        long mask = BASE_INT << (pos);
         int result = 0;
         while (pos >= 0) {
             if ((mask & value) != 0) {
@@ -176,7 +191,9 @@ public final class BitSet {
     }
 
     public BitSet takeLower(final int n) {
-        return streamBitSet(toStream().reverse().take(n).reverse());
+        final int mask = (1 << n) - 1;
+        return intBitSet(value & mask);
+//        return streamBitSet(toStream().reverse().take(n).reverse());
     }
 
     public BitSet takeUpper(final int n) {

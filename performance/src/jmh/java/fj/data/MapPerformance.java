@@ -15,7 +15,7 @@ import org.openjdk.jmh.annotations.Benchmark;
  */
 public class MapPerformance {
 
-    public static final int n = 10000000;
+    public static final int n = 10000;
     public static final Stream<Integer> s = LcgRng.naturalIntStream().take(n);
 
     @Benchmark
